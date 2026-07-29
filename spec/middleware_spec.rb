@@ -14,7 +14,7 @@ describe FiberStore::Middleware do
     body_proxy.tap(&:close)
   end
 
-  it 'cleares the store after body proxy is closed' do
+  it 'clears the store after body proxy is closed' do
     call_middleware do
       expect(FiberStore.store).to eq({ key: 'value' })
     end
@@ -30,7 +30,7 @@ describe FiberStore::Middleware do
   end
 
   context 'when an error was raised' do
-    it 'cleares the store after request' do
+    it 'clears the store after request' do
       expect { call_middleware({ error: true }) }.to raise_error(RuntimeError)
       expect(FiberStore.store).to eq({})
     end
