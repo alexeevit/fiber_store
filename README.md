@@ -54,7 +54,7 @@ In Rails applications, the required middleware is used automatically by the Rail
 
 ### For non-Rails applications
 
-To ensure the storage is cleared after each request, it's required to use the middleware manually:
+To ensure the storage is cleared before and after each request, it's required to use the middleware manually:
 ```ruby
 require 'fiber_store'
 

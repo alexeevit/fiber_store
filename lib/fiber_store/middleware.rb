@@ -9,6 +9,8 @@ module FiberStore
     end
 
     def call(env)
+      FiberStore.clear!
+
       returned = false
       status, headers, body = @app.call(env)
 

@@ -35,6 +35,34 @@ describe FiberStore::Middleware do
       expect(FiberStore.store).to eq({})
     end
   end
+
+  context 'when the store was touched before request threads spawn' do
+    let(:app) { ConcurrentApp.new }
+
+    it 'does not bleed data between threads serving concurrent requests' do
+      FiberStore.store
+
+      step = Queue.new
+      gate = Queue.new
+      seen = {}
+
+      thread_a =
+        Thread.new do
+          call_middleware({ user: 'userA', seen: seen, before_read: -> { step << :a_wrote; gate.pop } })
+        end
+
+      thread_b =
+        Thread.new do
+          step.pop
+          call_middleware({ user: 'userB', seen: seen, before_read: -> { gate << :go } })
+        end
+
+      [thread_a, thread_b].each(&:join)
+
+      expect(seen['userA']).to eq('userA')
+      expect(seen['userB']).to eq('userB')
+    end
+  end
 end
 
 class App
@@ -42,6 +70,16 @@ class App
     FiberStore[:key] = 'value'
 
     raise RuntimeError if env[:error]
+
+    [200, {}, ['Hello World']]
+  end
+end
+
+class ConcurrentApp
+  def call(env)
+    FiberStore[:session_key] = env[:user]
+    env[:before_read].call
+    env[:seen][env[:user]] = FiberStore[:session_key]
 
     [200, {}, ['Hello World']]
   end
