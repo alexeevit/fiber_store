@@ -85,6 +85,13 @@ FiberStore.fetch(:no_value) # => key not found: :no_value (KeyError)
 FiberStore.store # => { hello: "world" }
 ```
 
+## Change log
+
+### 0.0.4
+
+- The middleware now also clears the store at the start of each request, so data planted in the root fiber before worker threads spawn (e.g. during Rails boot) no longer bleeds between concurrent requests. ([f1138ff](https://github.com/alexeevit/fiber_store/commit/f1138ffa243f09c2358ccacb5a6284e5371bdbf5))
+- `FiberStore.fetch` now checks key presence instead of value truthiness, so stored `false` and `nil` values are returned instead of falling through to the default value, block, or `KeyError`. ([c0da8cd](https://github.com/alexeevit/fiber_store/commit/c0da8cd9b5a630c131f6cffd9d0315e560292864))
+
 ## Contributing
 
 1. Fork it

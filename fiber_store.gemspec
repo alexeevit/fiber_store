@@ -1,6 +1,8 @@
+require_relative 'lib/fiber_store/version'
+
 Gem::Specification.new do |s|
   s.name          = 'fiber_store'
-  s.version       = '0.0.3'
+  s.version       = FiberStore::VERSION
   s.summary       = 'Per-request fiber-based storage for Rack'
   s.description   = 'Per-request fiber-based storage for Rack'
   s.authors       = ['Viacheslav Alekseev']
