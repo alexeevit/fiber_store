@@ -21,6 +21,38 @@ describe FiberStore do
       end
     end
 
+    context 'when the key is found and the value is falsy' do
+      before { described_class[:key] = false }
+
+      it 'returns the value' do
+        expect(described_class.fetch(:key)).to eq(false)
+      end
+
+      it 'ignores the default value' do
+        expect(described_class.fetch(:key, 'default')).to eq(false)
+      end
+
+      it 'does not call the block' do
+        expect(described_class.fetch(:key) { 'block result' }).to eq(false)
+      end
+    end
+
+    context 'when the key is found and the value is nil' do
+      before { described_class[:key] = nil }
+
+      it 'returns nil' do
+        expect(described_class.fetch(:key)).to be_nil
+      end
+
+      it 'ignores the default value' do
+        expect(described_class.fetch(:key, 'default')).to be_nil
+      end
+
+      it 'does not call the block' do
+        expect(described_class.fetch(:key) { 'block result' }).to be_nil
+      end
+    end
+
     context 'when the key is not found' do
       context 'when default value is provided' do
         it 'returns the default value' do

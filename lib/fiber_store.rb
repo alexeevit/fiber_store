@@ -17,7 +17,7 @@ module FiberStore
     def fetch(key, default = :__undefined__)
       warn 'warning: block supersedes default value argument' if block_given? && default != :__undefined__
 
-      return store[key] if store[key]
+      return store[key] if store.key?(key)
       return yield if block_given?
       return default unless default == :__undefined__
 
